@@ -1,9 +1,0 @@
-cd to project directory :
-
-cd ChatApp
-
-open terminal in vs code :
-
-run npm dev
-
-chatapp should run on localhost: 3000
