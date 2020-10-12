@@ -1,0 +1,160 @@
+{% extends 'templates/app.twig' %}
+
+{% block content %}
+
+<style>
+    @media print {
+        a[href]:after {
+            display: none;
+            visibility: hidden;
+        }
+    }
+    .btn a{
+    color: white;
+    text-decoration: none;
+}
+    .btn p{
+        display: inline;
+    }
+
+</style>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="tableID" class="table table-bordered table-hover">
+            <h3>Order no #{{ order.id }} </h3>
+            <tr>
+                <td>Order id </td>
+                <td> : {{ order.hash }}</td>
+            </tr>
+            <tr>
+                <td>Date </td>
+                <td> : {{ order.created_at }}</td>
+            </tr>
+            <tr>
+                <td>Link to Join the Conference </td>
+                <td> : <a href="/Conference/login_register/login.php" target="_blank">http://localhost/conference/video_chat/join/redirect.php</a></td>
+            </tr>
+            <tr>    
+                <td>Token to Join the Conference </td>
+                <td style="font-size: 12px;"> : 0061dda5979d81e4631aa756e6dc25de131IACdhM0RE9+QjElt2mSaRBG/NHyhjcw+hgN5fp0KShhP1ltjNsAAAAAAEADXzqF+uMACXwEAAQC+wAJf</td>
+             </tr>
+            <tr>    
+                <td>Channel / Room name </td>
+                <td> : PHP</td>
+            </tr>
+            <tr>    
+                <td>Items </td>
+                <td>
+                    {% for product in order.products %}
+                    <p> :
+                        <a href="{{ path_for('product.get', {slug: product.slug}) }}">
+                            {{ product.title }}
+                        </a>
+                        ( {{ product.description }} )
+                        (x{{ product.pivot.quantity }})
+                    </p>
+                    {% endfor %}
+                </td>
+            </tr>
+            </table>
+
+        <button type="button" class="btn btn-primary btn-sm" onclick="window.print();"><i class="far fa-file-pdf"></i> Print / Save as PDF</button>
+        <button type="button" class="btn btn-success btn-sm" id="copy"><i class="far fa-paper-plane"></i> Copy &amp; Send to Email</button>
+
+        <script>
+            function _handleClick(event) {
+            event.preventDefault();
+
+            var textarea = document.createElement("textarea");
+
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-1px';
+            textarea.style.left = '-1px';
+            textarea.style.width = '1px';
+            textarea.style.height = '1px';
+            textarea.style.opacity = 0;
+            textarea.style.pointerEvents = 'none';
+
+            textarea.value = window.location.href;
+
+            document.body.appendChild(textarea);
+
+            textarea.select();
+
+            try {
+                var copiedURL = document.execCommand('copy');
+                if (copiedURL) {
+                alert('Copy successfull');
+                window.open("/Conference/Mailer/mailerPaymentDetail/index.php", "_blank");
+                } else {
+                console.log('Copy failed');
+                }
+            } catch (err) {
+                console.log('Copy failed',err);
+            }
+
+            document.body.removeChild(textarea);
+            }
+
+            document.getElementById('copy').addEventListener('click',_handleClick,false);
+        </script>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-6">
+                <table id="tableID" class="table table-bordered table-hover">
+                    <h4>Customer Details</h4>
+                    <tr>
+                        <td>Name &amp; email </td>
+                        <td> : {{ order.customer.name }} ({{ order.customer.email }})</td>
+                    </tr>
+                    <tr>
+                        <td>Address 1 </td>
+                        <td> : {{ order.address.address1 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Address 2 </td>
+                        <td> : {{ order.address.address2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>City </td>
+                        <td> : {{ order.address.city }}</td>
+                    </tr>
+                    <tr>
+                        <td>Postal Code </td>
+                        <td> : {{ order.address.postal_code }}</td>
+                    </tr> 
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table id="tableID" class="table table-bordered table-hover">
+                    <h4>Items</h4>
+                    <tr>
+                        <td>
+                            {% for product in order.products %}
+                                <a href="{{ path_for('product.get', {slug: product.slug}) }}">
+                                    {{ product.title }}
+                                    : {{ product.description }} 
+                                </a>
+                                (x{{ product.pivot.quantity }})
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+
+        <p>
+            PPN : -<br>
+            <strong>Order total : Rp. {{ order.total | number_format(2) }}</strong>
+        </p>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{
+    "name": "rifai/pdftk",
+    "authors": [
+        {
+            "name": "rifai",
+            "email": "rifaialc@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Classes\\" : "./classes"
+        }
+    },
+    "require": {
+        "mikehaertl/php-pdftk": "^0.8.0"
+    }
+}
